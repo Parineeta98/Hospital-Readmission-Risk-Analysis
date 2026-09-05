@@ -13,6 +13,7 @@ from sklearn.model_selection import train_test_split
 @dataclass
 class logregressionpipeline:
     project_root: Path
+    data_dir: Path
     plot_dir: Path
 
     data: pd.DataFrame | None = field(default=None, init=False)
@@ -35,8 +36,8 @@ class logregressionpipeline:
         plt.close(fig)
 
     def load_data(self):
-        fact_table = pd.read_csv(self.project_root / "fact_encounter.csv")
-        diagnosis_table = pd.read_csv(self.project_root / "dim_diagnosis.csv")
+        fact_table = pd.read_csv(self.data_dir / "fact_encounter.csv")
+        diagnosis_table = pd.read_csv(self.data_dir / "dim_diagnosis.csv")
         self.data = fact_table.merge(diagnosis_table, on="diagnosis_key", how="left", validate="many_to_one")
 
     def prepare_model_data(self) -> tuple[pd.DataFrame, pd.Series]:
@@ -107,7 +108,7 @@ class logregressionpipeline:
             coefficient_table[coefficient_table["support_count"] >= minimum_observation_count]
             .sort_values("odds_ratio", ascending=False).reset_index(drop=True))
 
-        reliable_coefficients.to_csv(self.project_root / "log_reg_reliable_coefficients.csv", index=False)
+        reliable_coefficients.to_csv(self.data_dir / "log_reg_reliable_coefficients.csv", index=False)
         return reliable_coefficients
 
     def score_full_dataset(self):
@@ -137,7 +138,7 @@ class logregressionpipeline:
         self.data["readmit_risk_score"] = self.model.predict_proba(aligned_feature_matrix)[:, 1]
         risk_score_table = self.data[["encounter_id", "readmit_risk_score"]].copy()
 
-        risk_score_table.to_csv(self.project_root / "risk_scores.csv", index=False)
+        risk_score_table.to_csv(self.data_dir / "risk_scores.csv", index=False)
         
     def make_core_model_plots(self):
         if self.test_target is None or self.predictions is None or self.prediction_probabilities is None:
@@ -181,10 +182,10 @@ class logregressionpipeline:
         self.save_plot(confusion_matrix_figure, "log_reg_confusion_matrix.png")
         
     def export_dim_admission_source(self):
-        admission_source_mapping = pd.read_csv(self.project_root / "IDS_mapping.csv", skiprows=42, skip_blank_lines=True, keep_default_na=False)
+        admission_source_mapping = pd.read_csv(self.data_dir / "IDS_mapping.csv", skiprows=42, skip_blank_lines=True, keep_default_na=False)
         admission_source_mapping["admission_source_id"] = (admission_source_mapping["admission_source_id"].astype(int))
         admission_source_mapping["description"] = (admission_source_mapping["description"].str.strip())
-        admission_source_mapping.to_csv(self.project_root / "dim_admission_source.csv", index=False)
+        admission_source_mapping.to_csv(self.data_dir / "dim_admission_source.csv", index=False)
 
     def run(self):
         self.load_data()

@@ -9,6 +9,7 @@ import statsmodels.formula.api as smf
 @dataclass
 class recreateplotsfromstrack:
     project_root: Path
+    data_dir: Path
     plot_dir: Path
 
     data: pd.DataFrame | None = field(default=None, init=False)
@@ -23,12 +24,12 @@ class recreateplotsfromstrack:
         plt.close(fig)
 
     def load_data(self):
-        patient_encounter_data = pd.read_csv(self.project_root / "diabetic_data.csv", na_values=["?"])
+        patient_encounter_data = pd.read_csv(self.data_dir / "diabetic_data.csv", na_values=["?"])
         patient_encounter_data["readmit_30"] = (patient_encounter_data["readmitted"] == "<30").astype(int)
 
         if "diagnosis_category" not in patient_encounter_data.columns:
-            encounter_to_diagnosis_key = pd.read_csv(self.project_root / "fact_encounter.csv", usecols=["encounter_id", "diagnosis_key"])
-            diagnosis_key_to_category = pd.read_csv(self.project_root / "dim_diagnosis.csv", usecols=["diagnosis_key", "diagnosis_category"])
+            encounter_to_diagnosis_key = pd.read_csv(self.data_dir / "fact_encounter.csv", usecols=["encounter_id", "diagnosis_key"])
+            diagnosis_key_to_category = pd.read_csv(self.data_dir / "dim_diagnosis.csv", usecols=["diagnosis_key", "diagnosis_category"])
             diagnosis_category_by_encounter = (encounter_to_diagnosis_key.merge( diagnosis_key_to_category, on="diagnosis_key", how="left", validate="many_to_one")
                 [["encounter_id", "diagnosis_category"]].drop_duplicates(subset="encounter_id", keep="first"))
             patient_encounter_data = patient_encounter_data.merge(diagnosis_category_by_encounter, on="encounter_id", how="left")
@@ -100,7 +101,7 @@ class recreateplotsfromstrack:
         plt.xticks(rotation=45)
         self.save_plot(figure, "paper_figure2_age_logit.png")
 
-        raw = pd.read_csv(self.project_root / "diabetic_data.csv", keep_default_na=False, na_values=["?"])
+        raw = pd.read_csv(self.data_dir / "diabetic_data.csv", keep_default_na=False, na_values=["?"])
         raw_hba1c = raw[["encounter_id", "A1Cresult", "change"]]
         df_model = df_model.drop(columns=["A1Cresult", "change"], errors="ignore").merge(raw_hba1c, on="encounter_id", how="left")
         df_model["hba1c_category"] = df_model.apply(self.recode_hba1c, axis=1)
@@ -173,7 +174,7 @@ class recreateplotsfromstrack:
             "is_figure1_category",
             "panel"]
         paper_recreation_export = pred_df_fig3[export_cols].copy()
-        paper_recreation_export.to_csv(self.project_root / "hba1c_diagnosis_predictions.csv", index=False)
+        paper_recreation_export.to_csv(self.data_dir / "hba1c_diagnosis_predictions.csv", index=False)
 
     def build_prediction_df(self, diagnosis_categories: list[str], hba1c_categories: list[str], mean_time_in_hospital: float) -> pd.DataFrame:
         pred_rows: list[dict[str, object]] = []

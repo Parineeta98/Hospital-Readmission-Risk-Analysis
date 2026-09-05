@@ -8,6 +8,7 @@ import seaborn as sns
 @dataclass
 class eda:
     project_root: Path
+    data_dir: Path
     plot_dir: Path
     df: pd.DataFrame | None = field(default=None, init=False)
 
@@ -67,7 +68,7 @@ class eda:
         return "Other"
 
     def load_and_clean_data(self) -> pd.DataFrame:
-        data_path = self.project_root / "diabetic_data.csv"
+        data_path = self.data_dir / "diabetic_data.csv"
         drop_columns = ["weight", "payer_code"]
         exclude_discharge_ids = {11, 13, 14, 19, 20, 21}
 
@@ -269,8 +270,8 @@ class eda:
         encounter_table = data_with_diagnosis_key[columns_to_keep].copy()
         encounter_table["readmit_30"] = (encounter_table["readmitted"] == "<30").astype(int)
 
-        encounter_table.to_csv(self.project_root / "fact_encounter.csv", index=False)
-        diagnosis_table.to_csv(self.project_root / "dim_diagnosis.csv", index=False)
+        encounter_table.to_csv(self.data_dir / "fact_encounter.csv", index=False)
+        diagnosis_table.to_csv(self.data_dir / "dim_diagnosis.csv", index=False)
         self.df = data_with_diagnosis_key
 
     def run(self):
