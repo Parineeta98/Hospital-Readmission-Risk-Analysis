@@ -1,0 +1,10 @@
+# Raw and generated data files (large; see README for source link)
+data/
+
+# Python
+__pycache__/
+*.pyc
+
+# Editor/tool folders
+.vscode/
+.obsidian/
