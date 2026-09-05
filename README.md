@@ -67,7 +67,6 @@ Full write-up is in [`reports/`](reports/).
 ## Repository structure
 
 ```
-├── notes/              # Phase-by-phase methodology notes and findings
 ├── result_plot/        # All generated plots
 ├── sql/                # Analytical SQL queries and views
 ├── dashboard/          # Power BI dashboard (.pbix) and theme
