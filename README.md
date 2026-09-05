@@ -81,6 +81,8 @@ Full write-up is in [`reports/`](reports/).
 └── LICENSE
 ```
 
+Dashboard: https://app.powerbi.com/groups/me/reports/bd1d7c49-b1f3-44a3-9164-fa29a50a1187/f7653dc2c78539a2d30c?experience=power-bi
+
 ## Tools
 
 Python (pandas, seaborn, scikit-learn, statsmodels) · Azure SQL Database · Power BI (Power Query, DAX)
