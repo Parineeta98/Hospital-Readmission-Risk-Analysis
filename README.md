@@ -18,8 +18,8 @@ Raw and generated data files are not committed to this repository (see `.gitigno
 ## Pipeline
 
 1. **Python (pandas, seaborn)** — cleaning and EDA
-2. **Azure SQL Database** — star schema + analytical queries (`sql/diabetes130_queries.sql`)
-3. **Python (scikit-learn, statsmodels)** — logistic regression on 30-day readmission risk, plus an independent replication of Strack et al. (2014)'s published figures
+2. **Python (scikit-learn, statsmodels)** — logistic regression on 30-day readmission risk, plus an independent replication of Strack et al. (2014)'s published figures
+3. **Azure SQL Database** — star schema + analytical queries (`sql/diabetes130_queries.sql`)
 4. **Power BI (Power Query + DAX)** — interactive dashboard (`dashboard/readmit_dashboard.pbix`) including a daily risk-flag watchlist
 
 ## Running the Python pipelines
@@ -48,15 +48,15 @@ All generated plots are saved in `result_plot/`.
 - A logistic regression risk-scoring model (AUC = 0.607) and an accompanying Power BI dashboard operationalize these findings into a daily discharge-planning risk watchlist.
 - Findings were independently cross-checked against Strack et al. (2014), the study originally published alongside this dataset (see `reference/`) — model coefficients and key relationships (e.g. HbA1c testing's link to lower readmission risk for diabetes patients) replicated closely.
 
-Full methodology, reliability checks, and phase-by-phase notes are in [`notes/`](notes/). A stakeholder-facing writeup is in [`reports/`](reports/).
+Full write-up is in [`reports/`](reports/).
 
 ### Selected plots
 
-**Prior hospital utilization compounds risk (flagship finding):**
+**Prior hospital utilization adds risk:**
 
 ![Readmission rate by prior inpatient visits, split by prior emergency visits](result_plot/readmission_by_previous_hospital_and_er_visits.png)
 
-**Young adults with a diabetes-primary diagnosis are a distinct risk spike:**
+**Young adults with diabetes as a primary diagnosis are a distinct risk spike:**
 
 ![Readmission rate for diabetes-primary encounters by age band](result_plot/eda_diabetes_by_age.png)
 
