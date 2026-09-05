@@ -1,0 +1,19 @@
+# Normalize line endings so edits from different OSes/editors don't
+# show up as whole-file diffs. Text files are stored with LF in the
+# repo and checked out with each platform's native line ending.
+* text=auto
+
+# Explicit for the main source/text types, in case autodetection ever
+# misses one:
+*.py text eol=lf
+*.sql text eol=lf
+*.md text eol=lf
+*.csv text eol=lf
+*.txt text eol=lf
+*.gitignore text eol=lf
+*.gitattributes text eol=lf
+
+# Binary files — never touch these
+*.png binary
+*.pbix binary
+*.pdf binary

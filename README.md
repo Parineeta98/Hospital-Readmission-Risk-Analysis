@@ -11,8 +11,8 @@ Which encounter-level and utilization factors are associated with 30-day readmis
 [Diabetes 130-US Hospitals for Years 1999-2008](https://archive.ics.uci.edu/dataset/296/diabetes+130-us+hospitals+for+years+1999-2008) (UCI ID 296) — 101,766 inpatient encounters across 130 US hospitals, 1999–2008.
 
 Raw and generated data files are not committed to this repository (see `.gitignore`) to keep it lightweight. To reproduce the pipeline:
-1. Download `diabetic_data.csv` and `IDS_mapping.csv` from the UCI link above.
-2. Place them in a local `data/` folder (already gitignored).
+1. Download `diabetic_data.csv` from the UCI link above and place it in a local `data/` folder (already gitignored).
+2. Copy `reference/IDS_mapping.csv` (already included in this repo) into that same `data/` folder — no second UCI download needed.
 3. Run the pipeline as described below — it regenerates the star-schema exports (`fact_encounter.csv`, `dim_diagnosis.csv`, etc.) into the same folder.
 
 ## Pipeline
@@ -24,21 +24,21 @@ Raw and generated data files are not committed to this repository (see `.gitigno
 
 ## Running the Python pipelines
 
-The notebook logic has been rewritten into OOP-based Python scripts:
+The notebook logic has been rewritten into OOP-based Python scripts, in `python_scripts/`:
 
-- `eda.py` — EDA pipeline and star-schema exports (`fact_encounter.csv`, `dim_diagnosis.csv`)
-- `log_reg.py` — logistic regression pipeline, model exports, and paper-figure recreation
-- `recreate_plots_from_strack.py` — recreates the source paper's published figures for cross-validation
-- `main.py` — entry point that runs the pipelines end-to-end
+- `python_scripts/eda.py` — EDA pipeline and star-schema exports (`fact_encounter.csv`, `dim_diagnosis.csv`)
+- `python_scripts/log_reg.py` — logistic regression pipeline, model exports, and paper-figure recreation
+- `python_scripts/recreate_plots_from_strack.py` — recreates the source paper's published figures for cross-validation
+- `python_scripts/main.py` — entry point that runs the pipelines end-to-end
 
-Install dependencies and run:
+Install dependencies and run from the repository root:
 
 ```bash
 pip install -r requirements.txt
-py main.py
+py python_scripts/main.py
 ```
 
-All generated plots are saved in `result_plot/`.
+All paths are resolved relative to the repository root regardless of which folder you run the command from, so `data/` and `result_plot/` are always found correctly. All generated plots are saved in `result_plot/`.
 
 ## Key findings
 
@@ -73,10 +73,11 @@ Full write-up is in [`reports/`](reports/).
 ├── reports/            # Stakeholder-facing report and dataset description
 ├── reference/          # Source paper (Strack et al., 2014) and ID mapping lookup
 ├── data/                # Raw/generated data (gitignored — see Dataset section)
-├── eda.py
-├── log_reg.py
-├── main.py
-├── recreate_plots_from_strack.py
+├── python_scripts/
+│   ├── eda.py
+│   ├── log_reg.py
+│   ├── main.py
+│   └── recreate_plots_from_strack.py
 ├── requirements.txt
 └── LICENSE
 ```
